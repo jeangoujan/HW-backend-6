@@ -61,3 +61,23 @@ class FlowersRepository:
             if flower.id == flower_id:
                 return flower
         return None
+    
+@define
+class Purchase:
+    user_id: int = 0
+    flower_id: int = 0
+
+class PurchaseRepository:
+    def __init__(self):
+        self.purchases = []
+
+    def save_purchase(self, purchase: Purchase):
+        self.purchases.append(purchase)
+
+
+    def get_purchases_by_user_id(self, user_id: int):
+        purchases = []
+        for purchase in self.purchases:
+            if purchase.user_id == user_id:
+                purchases.append(purchase)
+        return purchases

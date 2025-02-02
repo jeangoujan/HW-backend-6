@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Purchased items</title>
+</head>
+<body>
+    <h1>Purchased:</h1>
+    <ul>
+        {% for purchase in purchases %}
+            <li>
+                <p><strong>Flower name:</strong> {{ purchase.name }}</p>
+                <p><strong>Total price:</strong> {{ total_price }}</p>
+            </li><br>
+        {% endfor %}
+    </ul>
+
+
+    <form>
+        <button type="submit" formaction="/flowers">Back</button>
+    </form>
+</body>
+</html>

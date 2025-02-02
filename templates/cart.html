@@ -2,10 +2,10 @@
 <html>
 
 <head>
-    <title>Cart:</title>
+    <title>Cart</title>
 </head>
 <body>
-    <h1>Cart</h1>
+    <h1>Cart:</h1>
     <ul>
         {% for flower in flowers %}
             <li>
@@ -18,6 +18,9 @@
 
     <p><strong>Total price:</strong> {{ total_price }}</p>
 
+    <!-- <form>
+        <button type="submit" formaction="/purchased">Buy</button>
+    </form>  -->
     <form>
         <button type="submit" formaction="/flowers">Back</button>
     </form>

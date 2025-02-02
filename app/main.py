@@ -5,6 +5,7 @@ from .repository import UserRepository, User
 from jose import jwt
 import json
 from .repository import Flower, FlowersRepository
+from .repository import Purchase, PurchaseRepository
 
 
 
@@ -12,6 +13,7 @@ app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 repo = UserRepository()
 fl_repo = FlowersRepository()
+purchase_repo = PurchaseRepository()
 
 @app.get("/")
 def read_root(request: Request):
@@ -33,7 +35,8 @@ def signup(
     user = User(email=email, username=username, password=password)
     repo.save_user(user)
     return RedirectResponse(url="/login", status_code=303)
-# -------------------------------------------------------------
+
+
 #Login
 @app.get("/login")
 def login(request: Request):
@@ -54,9 +57,9 @@ def login(
         token = create_jwt(user.id)
         redirect_response.set_cookie("token", token)
         return redirect_response
-# -------------------------------------------------------------
 
 
+# Profile -----------------------------------------------------
 @app.get("/profile")
 def profile(request: Request, token: str = Cookie(default=None)):
     if token is None:
@@ -64,7 +67,6 @@ def profile(request: Request, token: str = Cookie(default=None)):
     user_id = decode_jwt(token)
     user = repo.get_by_id(user_id)
     return templates.TemplateResponse("profile.html", {"request": request, "user": user})
-
 
 
 # JWT --------------------------------------------------------
@@ -76,7 +78,6 @@ def create_jwt(user_id: int) -> int:
 def decode_jwt(token: str) -> int:
     data = jwt.decode(token, "jeangoujan", "HS256")
     return data["user_id"]
-# -------------------------------------------------------------
 
 
 # Flowers -----------------------------------------------------
@@ -94,8 +95,10 @@ def flowers(
     flower = Flower(flower_name=flower_name, quantity=quantity, price=price)
     fl_repo.save_flower(flower)
     return RedirectResponse(url="/flowers", status_code=303)
-# -------------------------------------------------------------
 
+
+
+# Cart --------------------------------------------------------
 @app.post("/cart/items")
 def add_cart(request: Request, flower_id: int = Form()):
         cart_cookie = request.cookies.get("cart_items")
@@ -114,7 +117,6 @@ def add_cart(request: Request, flower_id: int = Form()):
         return redirect_response
 
 
-
 @app.get("/cart/items")
 def get_cart(request: Request, cart_items: str = Cookie(default="[]")):
     flower_ids = json.loads(cart_items)
@@ -127,3 +129,25 @@ def get_cart(request: Request, cart_items: str = Cookie(default="[]")):
     total_price = sum([flower.price for flower in flowers])
     
     return templates.TemplateResponse("cart.html", {"request": request, "flowers": flowers, "total_price": total_price})
+
+# @app.post("/purchased")
+# def purchased(request: Request, token: str = Cookie(default=None), cart_items: str = Cookie(default="[]")):
+#     if token is None:
+#         return RedirectResponse(url="/login", status_code=303)
+#     user_id = decode_jwt(token)
+#     flower_ids = json.loads(cart_items)
+#     for flower_id in flower_ids:
+#         purchase = Purchase(user_id=user_id, flower_id=flower_id)
+#         purchase_repo.save_purchase(purchase)
+#     return RedirectResponse(url="/purchased", status_code=303)
+
+
+
+# @app.get("/purchased")
+# def purchased(request: Request, token: str = Cookie(default=None)):
+#     if token is None:
+#         return RedirectResponse(url="/login", status_code=303)
+#     user_id = decode_jwt(token)
+#     purchases = purchase_repo.get_purchases_by_user_id(user_id)
+
+
