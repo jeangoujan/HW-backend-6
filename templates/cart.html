@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Cart:</title>
+</head>
+<body>
+    <h1>Cart</h1>
+    <ul>
+        {% for flower in flowers %}
+            <li>
+                <p><strong>Flower ID:</strong> {{ flower.id }}</p>
+                <p><strong>Flower name:</strong> {{ flower.flower_name }}</p>
+                <p><strong>Price:</strong> {{ flower.price }}</p>
+            </li><br>
+        {% endfor %}
+    </ul>
+
+    <p><strong>Total price:</strong> {{ total_price }}</p>
+
+    <form>
+        <button type="submit" formaction="/flowers">Back</button>
+    </form>
+</body>
+</html>
